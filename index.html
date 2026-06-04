@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reporte de Horas — Jorge Mompeán</title>
-  <meta name="description" content="Registro y seguimiento de horas de trabajo mensual, semanal y diario. Sincronizado con GitHub Pages." />
-
-  <!-- TODO(security): CSP vía meta. En un servidor real usar cabecera HTTP. -->
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src https://api.github.com; frame-ancestors 'none'; object-src 'none';" />
+  <meta name="description"
+    content="Registro y seguimiento de horas de trabajo mensual, semanal y diario. Sincronizado con GitHub Pages." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.github.com;">
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta name="referrer" content="no-referrer" />
+
+
+
+
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,23 +27,82 @@
   <style>
     /* Inline-critical: panel subtitles & misc */
     .panel-subtitle {
-      font-size: 0.82rem; font-weight: 600; color: var(--text-secondary);
-      text-transform: uppercase; letter-spacing: 0.06em;
-      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
       border-bottom: 1px solid var(--border-color);
     }
-    .resumen-section { margin-bottom: 2rem; }
-    .modal-field-error { font-size: 0.82rem; color: var(--accent-red); margin-top: 0.5rem; }
-    .modal-field-ok    { font-size: 0.82rem; color: var(--accent-green); margin-top: 0.5rem; }
-    .modal-field-info  { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem; }
-    .task-details-summary { padding: 0.5rem 0; font-size: 0.78rem; color: var(--text-muted); cursor: pointer; list-style: none; }
-    .task-details-summary::-webkit-details-marker { display: none; }
-    .task-details-summary:hover { color: var(--text-secondary); }
-    .add-day-custom-wrap { margin-top: 0.5rem; display: none; }
-    .gist-help { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.5; }
-    .gist-help a { color: var(--accent-blue-light); }
-    .week-entries { display: flex; flex-direction: column; gap: 2px; margin-top: 0.4rem; }
-    .divider { border: none; border-top: 1px solid var(--border-color); margin: 1.25rem 0; }
+
+    .resumen-section {
+      margin-bottom: 2rem;
+    }
+
+    .modal-field-error {
+      font-size: 0.82rem;
+      color: var(--accent-red);
+      margin-top: 0.5rem;
+    }
+
+    .modal-field-ok {
+      font-size: 0.82rem;
+      color: var(--accent-green);
+      margin-top: 0.5rem;
+    }
+
+    .modal-field-info {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .task-details-summary {
+      padding: 0.5rem 0;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .task-details-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .task-details-summary:hover {
+      color: var(--text-secondary);
+    }
+
+    .add-day-custom-wrap {
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .gist-help {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .gist-help a {
+      color: var(--accent-blue-light);
+    }
+
+    .week-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 0.4rem;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border-color);
+      margin: 1.25rem 0;
+    }
   </style>
 
   <script>
@@ -51,6 +113,7 @@
     })();
   </script>
 </head>
+
 <body>
 
   <!-- ===== HEADER ===== -->
@@ -61,16 +124,17 @@
         <div class="logo">
           <div class="logo-icon">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+              <path d="M12 7v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </div>
           <span class="logo-text">Reporte de Horas</span>
         </div>
 
         <!-- Sync pill -->
-        <div class="sync-status sync-offline" id="sync-status"
-             onclick="Horas.openGistModal()" title="Configurar sincronización Gist" role="button" tabindex="0">
+        <div class="sync-status sync-offline" id="sync-status" onclick="Horas.openGistModal()"
+          title="Configurar sincronización Gist" role="button" tabindex="0">
           <span class="sync-dot"></span>
           <span id="sync-text">Sin Gist</span>
         </div>
@@ -78,25 +142,27 @@
 
       <!-- Header actions -->
       <div class="header-actions">
-        <button class="btn-header btn-header-green" id="btn-gist"
-                onclick="Horas.openGistModal()" title="Configurar sincronización con GitHub Gist"
-                aria-label="Configurar Gist">
+        <button class="btn-header btn-header-green" id="btn-gist" onclick="Horas.openGistModal()"
+          title="Configurar sincronización con GitHub Gist" aria-label="Configurar Gist">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"
-                  stroke="currentColor" stroke-width="1.5"/>
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"
+              stroke="currentColor" stroke-width="1.5" />
           </svg>
           <span>Gist Sync</span>
         </button>
 
-        <button class="btn-header btn-theme-toggle" id="btn-theme"
-                onclick="Horas.toggleTheme()" title="Cambiar tema" aria-label="Cambiar tema oscuro/claro">
+        <button class="btn-header btn-theme-toggle" id="btn-theme" onclick="Horas.toggleTheme()" title="Cambiar tema"
+          aria-label="Cambiar tema oscuro/claro">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
           </svg>
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" style="display:none" aria-hidden="true">
-            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
-            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2" />
+            <path
+              d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </button>
       </div>
@@ -115,18 +181,25 @@
         </div>
         <div class="month-nav" style="margin-left:auto">
           <button class="month-nav-btn" onclick="Horas.prevMonth()" title="Mes anterior" aria-label="Mes anterior">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </button>
           <div class="select-wrapper month-select-wrap">
             <select class="form-input" id="month-select" aria-label="Seleccionar mes">
               <option>Cargando…</option>
             </select>
             <svg class="select-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
             </svg>
           </div>
           <button class="month-nav-btn" onclick="Horas.nextMonth()" title="Mes siguiente" aria-label="Mes siguiente">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
           </button>
         </div>
       </div>
@@ -159,24 +232,24 @@
     <section class="section" id="section-main">
       <!-- Tab nav -->
       <nav class="tab-nav" role="tablist" aria-label="Vistas del reporte">
-        <button class="tab-btn active" id="tab-resumen" role="tab"
-                onclick="Horas.switchTab('resumen')" aria-controls="panel-resumen">
+        <button class="tab-btn active" id="tab-resumen" role="tab" onclick="Horas.switchTab('resumen')"
+          aria-controls="panel-resumen">
           Resumen
         </button>
-        <button class="tab-btn" id="tab-diario" role="tab"
-                onclick="Horas.switchTab('diario')" aria-controls="panel-diario">
+        <button class="tab-btn" id="tab-diario" role="tab" onclick="Horas.switchTab('diario')"
+          aria-controls="panel-diario">
           Diario
         </button>
-        <button class="tab-btn" id="tab-semanal" role="tab"
-                onclick="Horas.switchTab('semanal')" aria-controls="panel-semanal">
+        <button class="tab-btn" id="tab-semanal" role="tab" onclick="Horas.switchTab('semanal')"
+          aria-controls="panel-semanal">
           Semanal
         </button>
-        <button class="tab-btn" id="tab-tareas" role="tab"
-                onclick="Horas.switchTab('tareas')" aria-controls="panel-tareas">
+        <button class="tab-btn" id="tab-tareas" role="tab" onclick="Horas.switchTab('tareas')"
+          aria-controls="panel-tareas">
           Por tareas
         </button>
-        <button class="tab-btn" id="tab-anadir" role="tab"
-                onclick="Horas.switchTab('anadir')" aria-controls="panel-anadir">
+        <button class="tab-btn" id="tab-anadir" role="tab" onclick="Horas.switchTab('anadir')"
+          aria-controls="panel-anadir">
           + Añadir
         </button>
       </nav>
@@ -217,7 +290,8 @@
                 <option>Cargando…</option>
               </select>
               <svg class="select-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 9l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
               </svg>
             </div>
             <div class="add-day-custom-wrap" id="add-day-custom-wrap">
@@ -234,7 +308,8 @@
           <!-- Tarea -->
           <div class="form-group add-form-full">
             <label class="form-label" for="add-task">Nombre de la tarea / ticket</label>
-            <input class="form-input" type="text" id="add-task" placeholder="Ej: 123456 (Proyecto) — Descripción breve" />
+            <input class="form-input" type="text" id="add-task"
+              placeholder="Ej: 123456 (Proyecto) — Descripción breve" />
           </div>
 
           <!-- Horario -->
@@ -253,7 +328,7 @@
           <div class="form-group add-form-full">
             <button class="btn btn-primary" id="btn-add-submit" onclick="Horas.submitTask()">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
               </svg>
               Añadir entrada
             </button>
@@ -267,21 +342,23 @@
 
   <!-- ===== FOOTER ===== -->
   <footer class="app-footer">
-    <p>Reporte de Horas &copy; 2025-2026 &mdash;
-      <a href="https://www.linkedin.com/in/jorgemompean/" target="_blank" rel="noopener noreferrer">Jorge Mompeán Cabezas</a>
-      &mdash; Sincronizado con <a href="https://gist.github.com" target="_blank" rel="noopener noreferrer">GitHub Gist</a>
+    <p>Reporte de Horas &copy; 2026 &mdash;
+      <a href="https://www.linkedin.com/in/jorgemompean/" target="_blank" rel="noopener noreferrer">Jorge Mompeán
+        Cabezas</a>
+      &mdash; Sincronizado con <a href="https://gist.github.com" target="_blank" rel="noopener noreferrer">GitHub
+        Gist</a>
     </p>
   </footer>
 
   <!-- ===== MODAL: Gist Sync ===== -->
-  <div class="modal-overlay" id="modal-gist"
-       onclick="if(event.target===this)Horas.closeGistModal()" role="dialog" aria-modal="true" aria-labelledby="gist-modal-title">
+  <div class="modal-overlay" id="modal-gist" onclick="if(event.target===this)Horas.closeGistModal()" role="dialog"
+    aria-modal="true" aria-labelledby="gist-modal-title">
     <div class="modal">
       <div class="modal-header">
         <h2 class="modal-title" id="gist-modal-title">Sincronización con GitHub Gist</h2>
         <button class="modal-close" onclick="Horas.closeGistModal()" aria-label="Cerrar modal">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </button>
       </div>
@@ -295,9 +372,8 @@
           <label class="form-label" for="gist-token">Personal Access Token (PAT)</label>
           <!-- TODO(security): El token se guarda en localStorage (app personal).
                En prod pública usar BFF. -->
-          <input class="form-input" type="password" id="gist-token"
-                 placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                 autocomplete="off" />
+          <input class="form-input" type="password" id="gist-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+            autocomplete="off" />
           <p class="gist-help">
             Genera un token en
             <a href="https://github.com/settings/tokens/new?scopes=gist" target="_blank" rel="noopener noreferrer">
@@ -309,9 +385,8 @@
 
         <div class="form-group" style="margin-bottom:1rem">
           <label class="form-label" for="gist-id">ID del Gist (opcional)</label>
-          <input class="form-input" type="text" id="gist-id"
-                 placeholder="Déjalo vacío para crear uno nuevo"
-                 autocomplete="off" />
+          <input class="form-input" type="text" id="gist-id" placeholder="Déjalo vacío para crear uno nuevo"
+            autocomplete="off" />
           <p class="gist-help">Si ya tienes un Gist creado, pega su ID aquí para reutilizarlo.</p>
         </div>
 
@@ -319,7 +394,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="Horas.disconnectGist()" id="btn-disconnect"
-                style="color:var(--accent-red);border-color:rgba(239,68,68,0.3)">
+          style="color:var(--accent-red);border-color:rgba(239,68,68,0.3)">
           Desconectar
         </button>
         <div style="flex:1"></div>
@@ -343,10 +418,11 @@
       // Apply theme icons on load
       const theme = document.documentElement.getAttribute('data-theme') || 'dark';
       const moon = document.querySelector('.icon-moon');
-      const sun  = document.querySelector('.icon-sun');
+      const sun = document.querySelector('.icon-sun');
       if (moon) moon.style.display = theme === 'dark' ? '' : 'none';
-      if (sun)  sun.style.display  = theme === 'light' ? '' : 'none';
+      if (sun) sun.style.display = theme === 'light' ? '' : 'none';
     });
   </script>
 </body>
+
 </html>
