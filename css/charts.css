@@ -1,0 +1,45 @@
+/* ── Bar chart ── */
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 28px;
+}
+
+.bar-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  min-width: 0;
+  flex: 0 0 35%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bar-fill {
+  height: 20px;
+  border-radius: 4px;
+  background: var(--gradient-blue);
+  min-width: 4px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bar-val {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}

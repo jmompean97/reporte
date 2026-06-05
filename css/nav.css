@@ -1,0 +1,38 @@
+/* ── Month nav ── */
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.month-nav-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.month-nav-btn:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: var(--accent-blue-light);
+}
+
+.month-nav-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.month-select-wrap {
+  flex: 1;
+  min-width: 180px;
+  max-width: 260px;
+}

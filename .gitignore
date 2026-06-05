@@ -1,6 +1,3 @@
-# Ignorar el Excel del tracking de git (datos sensibles de trabajo)
-# Comenta esta línea si quieres incluirlo en el repo
-Horas.xlsx
 
 # Archivos del sistema
 .DS_Store

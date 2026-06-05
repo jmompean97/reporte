@@ -15,14 +15,9 @@ reporte/
 │   ├── components.css      # Botones, tabs, cards, tablas, gráficos
 │   └── responsive.css      # Responsive breakpoints
 ├── js/
-│   ├── horas-data.js       # ⚠️ AUTO-GENERADO (no editar)
+│   ├── horas-data.js       # ⚠️ AUTO-GENERADO (datos históricos inmutables)
 │   ├── horas.js            # Lógica de la app
 │   └── gist.js             # Sincronización con GitHub Gist
-├── scripts/
-│   └── extract_horas.py    # Script para regenerar horas-data.js
-├── Horas.xlsx              # Fuente de datos
-└── .github/workflows/
-    └── pages.yml           # Auto-deploy a GitHub Pages
 ```
 
 ## Uso
@@ -34,13 +29,6 @@ python3 -m http.server 8080
 # Luego visita http://localhost:8080
 ```
 
-### Actualizar datos del Excel
-Cada vez que modifiques `Horas.xlsx`, regenera los datos:
-```bash
-python3 scripts/extract_horas.py
-```
-Luego haz commit y push → GitHub Pages se actualiza automáticamente.
-
 ### Sincronización con GitHub Gist
 Las entradas nuevas que añades en la app se sincronizan con un Gist privado de GitHub:
 1. Genera un token en [github.com/settings/tokens](https://github.com/settings/tokens/new?scopes=gist) con el scope `gist`
@@ -51,7 +39,7 @@ Las entradas nuevas que añades en la app se sincronizan con un Gist privado de 
 1. Crea un repositorio en GitHub
 2. `git remote add origin https://github.com/TU_USUARIO/reporte.git`
 3. `git push -u origin main`
-4. En GitHub → Settings → Pages → Source: **GitHub Actions**
+4. En GitHub → Settings → Pages → Selecciona desplegar desde la rama `main`.
 
 ## Vistas disponibles
 - **Resumen** — KPIs del mes + tabla de tareas + gráfico de barras por tarea

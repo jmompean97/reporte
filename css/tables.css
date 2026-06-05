@@ -1,0 +1,66 @@
+/* ── Tables ── */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.data-table th {
+  background: var(--bg-table-header);
+  padding: 0.75rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover td {
+  background: var(--glass);
+}
+
+.cell-task {
+  max-width: 380px;
+  word-break: break-word;
+}
+
+.cell-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.cell-num.accent-blue {
+  color: var(--accent-blue-light);
+  font-weight: 600;
+}
+
+.cell-num.accent-green {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.cell-num.accent-red {
+  color: var(--accent-red);
+  font-weight: 600;
+}

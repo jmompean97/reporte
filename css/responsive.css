@@ -2,30 +2,95 @@
    css/responsive.css
    ============================================= */
 @media (max-width: 768px) {
-  .app-main { padding: 1rem; gap: 1rem; }
-  .section { padding: 1.25rem; border-radius: var(--radius-lg); }
-  .header-inner { padding: 0.5rem 0; }
-  .logo-text { font-size: 1rem; }
-  .main-nav-btn span { display: none; }
-  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-  .entry-row { grid-template-columns: 100px 1fr 48px; gap: 0.5rem; }
-  .add-form-grid { grid-template-columns: 1fr; }
-  .week-grid { grid-template-columns: 1fr 1fr; }
-  .tab-btn { font-size: 0.75rem; padding: 0.4rem 0.5rem; }
+  .app-main {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .section {
+    padding: 1.25rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .header-inner {
+    padding: 0.5rem 0;
+  }
+
+  .logo-text {
+    font-size: 1rem;
+  }
+
+  .main-nav-btn span {
+    display: none;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .entry-row {
+    gap: 0.5rem;
+  }
+
+  .add-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tab-btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.5rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .app-header { padding: 0 1rem; }
-  .kpi-grid { grid-template-columns: 1fr 1fr; }
-  .kpi-value { font-size: 1.25rem; }
-  .week-grid { grid-template-columns: 1fr; }
-  .entry-row { grid-template-columns: 90px 1fr 44px; gap: 0.35rem; }
-  .bar-label { flex: 0 0 40%; }
-  .header-actions .btn-header span { display: none; }
-  .modal { max-width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0; align-self: flex-end; max-height: 85vh; }
-  .modal-overlay { align-items: flex-end; }
+  .app-header {
+    padding: 0 1rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .kpi-value {
+    font-size: 1.25rem;
+  }
+
+  .week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-row {
+    gap: 0.35rem;
+  }
+
+  .bar-label {
+    flex: 0 0 40%;
+  }
+
+  .header-actions .btn-header span {
+    display: none;
+  }
+
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    align-self: flex-end;
+    max-height: 85vh;
+  }
+
+  .modal-overlay {
+    align-items: flex-end;
+  }
 }
 
 @media (min-width: 1200px) {
-  .day-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .day-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
 }

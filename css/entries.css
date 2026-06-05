@@ -1,0 +1,205 @@
+/* ── Day cards (Diario) ── */
+.day-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.day-card {
+  background: var(--bg-card-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: var(--transition);
+  animation: cardIn 0.3s ease both;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.day-card:hover {
+  border-color: rgba(59, 130, 246, 0.2);
+  box-shadow: var(--shadow-card-dark);
+}
+
+.day-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  background: rgba(59, 130, 246, 0.06);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.day-card-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.day-card-total {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-blue-light);
+  background: rgba(59, 130, 246, 0.12);
+  padding: 0.2rem 0.65rem;
+  border-radius: 99px;
+}
+
+.day-entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.15s ease;
+}
+
+.entry-info {
+  width: 100%;
+}
+
+.entry-row.entry-no-time {
+  grid-template-columns: 1fr 56px;
+}
+
+.entry-row:last-child {
+  border-bottom: none;
+}
+
+.entry-row:hover {
+  background: var(--glass);
+}
+
+.entry-row.entry-custom {
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.entry-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
+  white-space: nowrap;
+}
+
+.entry-task {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  word-break: break-word;
+  max-width: 90%;
+}
+
+.entry-horas {
+  display: flex;
+  align-items: center;
+  text-align: right;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-blue-light);
+  white-space: nowrap;
+}
+
+.entry-nota {
+  grid-column: 2 / 4;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: -0.25rem;
+}
+
+/* ── Weekly view ── */
+.week-section {
+  margin-bottom: 1.5rem;
+}
+
+.week-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  margin-bottom: 0.75rem;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: var(--radius-md);
+}
+
+.week-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-blue-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.week-total {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.week-day-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+}
+
+.week-day-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+.week-day-horas {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.week-day-horas.accent-blue {
+  color: var(--accent-blue-light);
+}
+
+.week-entry {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+
+.week-entry-task {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-entry-h {
+  flex-shrink: 0;
+  color: var(--accent-blue-light);
+  font-weight: 500;
+}

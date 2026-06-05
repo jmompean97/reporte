@@ -1,0 +1,121 @@
+/* ── Accent helpers ── */
+.accent-blue {
+  color: var(--accent-blue-light);
+}
+
+.accent-green {
+  color: var(--accent-green);
+}
+
+.accent-red {
+  color: var(--accent-red);
+}
+
+.accent-orange {
+  color: var(--accent-orange);
+}
+
+/* ── Loading spinner ── */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--glass-border);
+  border-top-color: var(--accent-blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Pre-sync loader ── */
+.pre-sync-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg-primary);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.is-sync-loading .pre-sync-loader {
+  display: flex;
+}
+
+/* ── Utilities ── */
+.d-flex {
+  display: flex;
+}
+.d-none {
+  display: none;
+}
+.flex-column {
+  flex-direction: column;
+}
+.justify-between {
+  justify-content: space-between;
+}
+.align-center {
+  align-items: center;
+}
+.align-end {
+  align-items: flex-end;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.gap-3 {
+  gap: 1rem;
+}
+.flex-1 {
+  flex: 1;
+}
+.mb-0 {
+  margin-bottom: 0;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.mb-3 {
+  margin-bottom: 1rem;
+}
+.mb-4 {
+  margin-bottom: 1.25rem;
+}
+.mb-5 {
+  margin-bottom: 1.5rem;
+}
+.mt-4 {
+  margin-top: 2rem;
+}
+.ml-auto {
+  margin-left: auto;
+}
+.m-0 {
+  margin: 0;
+}
+.w-100 {
+  width: 100%;
+}
+.max-w-xs {
+  max-width: 300px;
+}
+.max-w-sm {
+  max-width: 450px;
+}
+.op-60 {
+  opacity: 0.6;
+}
+.fw-normal {
+  font-weight: normal;
+}
+.c-pointer {
+  cursor: pointer;
+}

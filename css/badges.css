@@ -1,0 +1,76 @@
+/* ── Badges / Tags ── */
+.badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.badge-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-orange {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--accent-blue-light);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ── Entry States ── */
+.entry-vacaciones {
+  background: rgba(16, 185, 129, 0.05);
+  border-left: 3px solid #34d399;
+}
+
+.entry-festivol {
+  background: rgba(245, 158, 11, 0.05);
+  border-left: 3px solid #fbbf24;
+}
+
+.entry-festivon {
+  background: rgba(245, 158, 11, 0.05);
+  border-left: 3px solid #f59e0b;
+}
+
+.entry-baja {
+  background: rgba(239, 68, 68, 0.05);
+  border-left: 3px solid #f87171;
+}
+
+.badge-vacaciones {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.badge-festivol {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  margin: 0 1rem;
+}
+
+.badge-festivon {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  margin: 0 1rem;
+}
+
+.badge-baja {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
