@@ -1,22 +1,22 @@
 # Reporte de Horas
 
-App web para visualizar y gestionar el registro de horas de trabajo, generada a partir del Excel `Horas.xlsx`.
+App web para visualizar y gestionar el registro de horas de trabajo, con soporte offline y persistencia remota mediante GitHub Gists.
 
-🌐 **GitHub Pages:** _(URL tras configurar el repo en GitHub)_
+🌐 **GitHub Pages:** [https://jmompean97.github.io/reporte/](https://jmompean97.github.io/reporte/)
 
 ## Estructura
 
 ```
 reporte/
 ├── index.html              # App web principal
-├── css/
+├── favicon.svg             # Favicon
+├── css/                    # Arquitectura CSS modularizada
 │   ├── variables.css       # Design tokens (dark/light mode)
-│   ├── layout.css          # Header, footer, secciones
-│   ├── components.css      # Botones, tabs, cards, tablas, gráficos
-│   └── responsive.css      # Responsive breakpoints
+│   ├── layout.css          # Estructura principal
+│   ├── components/         # Módulos: buttons, cards, modals, nav, tables, etc.
+│   └── responsive.css      # Ajustes para móviles
 ├── js/
-│   ├── horas-data.js       # ⚠️ AUTO-GENERADO (datos históricos inmutables)
-│   ├── horas.js            # Lógica de la app
+│   ├── horas.js            # Lógica principal de la app y UI
 │   └── gist.js             # Sincronización con GitHub Gist
 ```
 
