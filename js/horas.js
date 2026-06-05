@@ -195,9 +195,12 @@ const Horas = (function () {
 
   function parseHoras(str) {
     if (!str) return 0;
-    const ranges = str.split(/[,; y&]+/);
+    // Split on: comma, semicolon, or " y " / " & " (with surrounding spaces)
+    // Do NOT split on bare spaces so "07:00 - 08:00" stays intact
+    const ranges = str.split(/[,;]|\s+[y&]\s+/);
     let total = 0;
     ranges.forEach((r) => {
+      r = r.trim();
       const m = r.match(
         /(\d{1,2})[:\.]?(\d{2})?\s*[-a]\s*(\d{1,2})[:\.]?(\d{2})?/,
       );
@@ -1041,6 +1044,8 @@ const Horas = (function () {
 
   function submitTask() {
     const res = document.getElementById("add-result");
+    if (!res) return;
+    try {
     const dateVal = document.getElementById("add-day-date").value;
 
     if (!dateVal) {
@@ -1121,6 +1126,10 @@ const Horas = (function () {
       cancelEdit();
       switchTab("mensual");
     }, 1000);
+    } catch (err) {
+      console.error("[submitTask] Error inesperado:", err);
+      if (res) res.innerHTML = `<div class="modal-field-error">Error inesperado: ${err.message}</div>`;
+    }
   }
 
   function exportToMD() {
