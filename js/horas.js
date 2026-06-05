@@ -1048,7 +1048,9 @@ const Horas = (function () {
       return;
     }
 
-    const dObj = new Date(dateVal);
+    // Parse as local date to avoid UTC offset shifting the day (e.g. UTC+2)
+    const [dYear, dMon, dDay] = dateVal.split("-").map(Number);
+    const dObj = new Date(dYear, dMon - 1, dDay);
     const dayNames = [
       "Domingo",
       "Lunes",
@@ -1094,8 +1096,12 @@ const Horas = (function () {
       }
     } else {
       horas = parseHoras(horario);
-      if (horas <= 0 && !horario) {
-        res.innerHTML = `<div class="modal-field-error">El horario es obligatorio para calcular las horas.</div>`;
+      if (horas <= 0) {
+        if (!horario) {
+          res.innerHTML = `<div class="modal-field-error">El horario es obligatorio para calcular las horas.</div>`;
+        } else {
+          res.innerHTML = `<div class="modal-field-error">No se pudieron calcular las horas. Revisa el formato del horario (ej: 08:00 - 17:00).</div>`;
+        }
         return;
       }
     }
