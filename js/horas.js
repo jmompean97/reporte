@@ -241,6 +241,17 @@ const Horas = (function () {
 
     base.days.sort((a, b) => (a.n || 0) - (b.n || 0));
 
+    // Ordenar entradas de cada día por hora de inicio del horario
+    const _getStartMin = (horario) => {
+      if (!horario || horario === "-" || horario === "—" || horario === "Jornada completa") return Infinity;
+      const m = horario.match(/(\d{1,2})[:\.]?(\d{2})?/);
+      if (!m) return Infinity;
+      return parseInt(m[1] || 0) * 60 + parseInt(m[2] || 0);
+    };
+    base.days.forEach((d) => {
+      d.entries.sort((a, b) => _getStartMin(a.horario) - _getStartMin(b.horario));
+    });
+
     base.days.forEach((d) => {
       let s = 0;
       d.entries.forEach((e) => (s += parseFloat(e.horas || 0)));
@@ -1101,6 +1112,33 @@ const Horas = (function () {
       }
     } else {
       horas = parseHoras(horario);
+
+      // Descuento parón 14:00-15:00: L-J, sept-jun, horario manual normal
+      const paronMm = parseInt(_month.split("-")[0], 10);
+      const paronIsIntensiva = paronMm === 7 || paronMm === 8;
+      const paronDow = dObj.getDay(); // 0=Dom,1=Lun..4=Jue,5=Vie
+      if (!paronIsIntensiva && paronDow >= 1 && paronDow <= 4) {
+        const paronRanges = horario.split(/[,;]|\s+[y&]\s+/);
+        let paronDeduccion = 0;
+        paronRanges.forEach((r) => {
+          r = r.trim();
+          const pm = r.match(
+            /(\d{1,2})[:\.]?(\d{2})?\s*[-a]\s*(\d{1,2})[:\.]?(\d{2})?/,
+          );
+          if (pm) {
+            const ph1 = parseInt(pm[1] || 0) + parseInt(pm[2] || 0) / 60;
+            const ph2 = parseInt(pm[3] || 0) + parseInt(pm[4] || 0) / 60;
+            // El rango cruza completamente el parón (empieza antes de las 14 y acaba después de las 15)
+            if (ph1 < 14 && ph2 > 15) {
+              paronDeduccion += 1;
+            }
+          }
+        });
+        if (paronDeduccion > 0) {
+          horas = Math.round((horas - paronDeduccion) * 10) / 10;
+        }
+      }
+
       if (horas <= 0) {
         if (!horario) {
           res.innerHTML = `<div class="modal-field-error">El horario es obligatorio para calcular las horas.</div>`;
