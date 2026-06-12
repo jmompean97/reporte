@@ -786,6 +786,70 @@
     </div>
 
 
+    <!-- Modal Editar Ticket -->
+    <div class="modal-overlay" id="edit-ticket-modal" onclick="if(event.target===this) Horas.closeEditModal()">
+      <div class="modal max-w-sm">
+        <div class="modal-header">
+          <h2 class="modal-title">Editar Ticket</h2>
+          <button class="modal-close" onclick="Horas.closeEditModal()" aria-label="Cerrar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label class="form-label" for="edit-ticket-name">Nombre del ticket</label>
+            <input type="text" id="edit-ticket-name" class="form-input"
+                   onkeydown="if(event.key==='Enter') Horas.saveEditTicket()" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-ticket-estimadas">
+              Horas estimadas <span style="opacity:0.5; font-size:0.75em; font-weight:400;">(opcional)</span>
+            </label>
+            <input type="number" id="edit-ticket-estimadas" class="form-input" placeholder="Ej: 20" min="0" step="0.5"
+                   onkeydown="if(event.key==='Enter') Horas.saveEditTicket()" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="Horas.closeEditModal()">Cancelar</button>
+          <button class="btn btn-primary" onclick="Horas.saveEditTicket()">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Crear Ticket -->
+    <div class="modal-overlay" id="create-ticket-modal" onclick="if(event.target===this) Horas.closeCreateModal()">
+      <div class="modal max-w-sm">
+        <div class="modal-header">
+          <h2 class="modal-title">Crear Ticket</h2>
+          <button class="modal-close" onclick="Horas.closeCreateModal()" aria-label="Cerrar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group mb-3">
+            <label class="form-label" for="new-ticket-name">Nombre del ticket</label>
+            <input type="text" id="new-ticket-name" class="form-input" placeholder="Ej: Proyecto Alfa"
+                   onkeydown="if(event.key==='Enter') Horas.addTicket()" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="new-ticket-estimadas">
+              Horas estimadas <span style="opacity:0.5; font-size:0.75em; font-weight:400;">(opcional)</span>
+            </label>
+            <input type="number" id="new-ticket-estimadas" class="form-input" placeholder="Ej: 20" min="0" step="0.5"
+                   onkeydown="if(event.key==='Enter') Horas.addTicket()" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="Horas.closeCreateModal()">Cancelar</button>
+          <button class="btn btn-primary" onclick="Horas.addTicket()">Crear</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal Clonar Ticket -->
     <div class="modal-overlay" id="clone-modal">
       <div class="modal max-w-sm">

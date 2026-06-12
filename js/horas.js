@@ -94,13 +94,13 @@ const Horas = (function () {
           _custom = c;
         }
       }
-    } catch (_) {}
+    } catch (_) { }
   }
 
   function _saveLocal() {
     try {
       localStorage.setItem("horas-custom", JSON.stringify(_custom));
-    } catch (_) {}
+    } catch (_) { }
   }
 
   function _initMonthSelect() {
@@ -224,8 +224,9 @@ const Horas = (function () {
     const cust = _custom.months[_month];
 
     Object.keys(cust).forEach((id) => {
-      if (id === "tickets") return;
+      if (id === "tickets" || id === "ticketEstimadas") return;
       const mod = cust[id];
+      if (!mod || typeof mod !== "object" || Array.isArray(mod) || !mod.day) return;
       if (mod.deleted) return;
 
       let day = base.days.find((d) => d.day === mod.day);
@@ -353,27 +354,25 @@ const Horas = (function () {
   function _renderResumen(data) {
     const p = document.getElementById("fixed-resumen");
 
-    // Formulario añadir ticket
+    const estMap = (_custom.months[_month] && _custom.months[_month].ticketEstimadas) || {};
+
     let html = `
         <div class="card mb-5">
             <div class="card-header d-flex justify-between align-center">
                 <span class="card-title">Gestión de Tickets</span>
-                <button class="btn btn-outline" style="padding: 0.25rem 0.75rem; font-size: 0.75rem;" onclick="Horas.openCloneModal()">Clonar de mes anterior...</button>
             </div>
-            <div class="d-flex gap-2 align-end justify-between mt-4">
-                <div class="d-flex gap-2 align-end flex-1">
-                    <div class="form-group max-w-xs m-0">
-                        <label class="form-label" for="new-ticket-name">Nuevo Ticket</label>
-                        <input type="text" id="new-ticket-name" class="form-input" placeholder="Ej: Proyecto Alfa" />
-                    </div>
-                    <button class="btn btn-outline" onclick="Horas.addTicket()">Crear</button>
+            <div class="d-flex gap-2 align-center justify-between mt-4" style="flex-wrap: wrap;">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary" onclick="Horas.openCreateModal()">Crear ticket</button>
+                    <button class="btn btn-primary" onclick="Horas.openCloneModal()" style="background:var(--accent-purple,#7c3aed); border-color:var(--accent-purple,#7c3aed);">
+                        Clonar ticket
+                    </button>
                 </div>
                 <button class="btn btn-outline" style="color:var(--text-secondary); border-color:var(--glass-border);" onclick="Horas.exportToMD()" title="Exportar tabla a Markdown">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="margin-right:6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                     Exportar Tabla
                 </button>
-            </div>
-            <div class="d-flex gap-2 mb-3" style="flex-wrap: wrap;">`;
+            </div>`;
 
     if (!_custom.months[_month]) _custom.months[_month] = { tickets: [] };
     const monthTickets = (_custom.months[_month].tickets || []).filter(
@@ -381,12 +380,6 @@ const Horas = (function () {
     );
 
     if (monthTickets.length > 0) {
-      html += `<ul class="w-100 m-0" style="list-style: none; padding: 0;">`;
-      const sortedTickets = [...monthTickets].sort((a, b) =>
-        a.localeCompare(b),
-      );
-
-      // Map tasks to their hours
       const taskHoursMap = {};
       let totalMes = 0;
       data.tasks.forEach((t) => {
@@ -394,54 +387,128 @@ const Horas = (function () {
         totalMes += parseFloat(t.horas_emp);
       });
 
+      html += `
+        <div class="d-flex align-center" style="margin-top:1.25rem; padding:0 0 0.5rem 0; border-bottom:1px solid var(--border-color); font-size:0.72rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-secondary);">
+          <span style="flex:1;">Ticket</span>
+          <span style="min-width:90px; text-align:center;">Ded.</span>
+          <span style="min-width:90px; text-align:center;">Est.</span>
+          <span style="min-width:90px; text-align:center;">Dif.</span>
+          <span style="width:72px; flex-shrink:0;"></span>
+        </div>`;
+
+      const sortedTickets = [...monthTickets].sort((a, b) => a.localeCompare(b));
+
       sortedTickets.forEach((t) => {
-        const h = taskHoursMap[t] || 0;
-        const w = Math.min(100, (h / Math.max(totalMes, 1)) * 100);
+        const hDed = taskHoursMap[t] || 0;
+        const hEst = estMap[t] != null ? parseFloat(estMap[t]) : null;
+        const hDif = hEst != null ? (hDed - hEst) : null;
+        const w = Math.min(100, (hDed / Math.max(totalMes, 1)) * 100);
         const color = getTaskColor(t);
 
-        html += `<li class="d-flex flex-column gap-2" style="padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
-                   <div class="d-flex justify-between" style="align-items: flex-start;">
-                       <div class="d-flex align-center" style="color: var(--text-primary); flex: 1;">
-                           <svg style="margin-right: 8px; color: ${color}; flex-shrink: 0;" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                             <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
-                             <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
-                           </svg>
-                           <span style="font-weight: 500;">${t}</span>
-                           <div class="d-flex gap-2" style="margin-left: 1rem;">
-                               <button class="btn btn-outline" style="padding: 0.15rem 0.5rem; font-size: 0.7rem;" onclick="Horas.editTicket('${t}')" title="Renombrar ticket">Editar</button>
-                               <button class="btn btn-outline" style="padding: 0.15rem 0.5rem; font-size: 0.7rem; color: var(--accent-red); border-color: rgba(239, 68, 68, 0.3);" onclick="Horas.deleteTicket('${t}')" title="Eliminar ticket y todas sus horas del mes">Eliminar</button>
-                           </div>
-                       </div>
-                       <span style="min-width: 45px; text-align: right; color: ${color}; font-weight: 600; font-size: 0.9rem;">${h > 0 ? h + "h" : "0h"}</span>
-                   </div>
-                   <div class="w-100" style="padding-left: 24px;">
-                       <div class="task-bar-wrap m-0" style="height: 6px;">
-                           <div style="width: ${w}%; height: 100%; background: ${color}; border-radius: 3px; transition: width 0.4s ease;"></div>
-                       </div>
-                   </div>
-                 </li>`;
+        let difColor = "var(--text-secondary)";
+        let difText = "\u2014";
+        if (hDif !== null) {
+          difText = (hDif >= 0 ? "+" : "") + hDif.toFixed(1) + "h";
+          difColor = hDif > 0 ? "var(--accent-red)" : (hDif < 0 ? "var(--accent-green, #4ade80)" : "var(--text-secondary)");
+        }
+
+        const estText = hEst != null ? hEst.toFixed(1) + "h" : "\u2014";
+        const estColor = hEst != null ? "var(--text-secondary)" : "rgba(255,255,255,0.25)";
+        const tEsc = t.replace(/\'/g, "\\\'").replace(/"/g, "&quot;");
+
+        html += `
+          <div class="d-flex flex-column" style="border-bottom:1px solid var(--border-color);">
+            <div class="d-flex align-center" style="padding:0.75rem 0; gap:0;">
+              <svg style="margin-right:8px; color:${color}; flex-shrink:0;" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4" fill="currentColor"></circle>
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path>
+              </svg>
+              <span style="font-weight:500; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${t}</span>
+              <span style="min-width:90px; text-align:center; color:${color}; font-weight:700; font-size:0.9rem;">${hDed > 0 ? hDed.toFixed(1) + "h" : "0h"}</span>
+              <span style="min-width:90px; text-align:center; color:${estColor}; font-size:0.9rem; font-weight:${hEst != null ? '600' : '400'};">${estText}</span>
+              <span style="min-width:90px; text-align:center; color:${difColor}; font-size:0.9rem; font-weight:600;">${difText}</span>
+              <div class="d-flex gap-1" style="width:72px; flex-shrink:0; justify-content:flex-end; padding-left:8px;">
+                <button title="Editar" style="display:flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; border:1px solid var(--glass-border); background:transparent; cursor:pointer; color:var(--text-secondary); transition:all 0.15s;" onmouseover="this.style.borderColor='rgba(99,102,241,0.5)';this.style.color='var(--accent-blue-light)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.color='var(--text-secondary)'" onclick="Horas.editTicket('${tEsc}')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button title="Eliminar" style="display:flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; border:1px solid var(--glass-border); background:transparent; cursor:pointer; color:var(--text-secondary); transition:all 0.15s;" onmouseover="this.style.borderColor='rgba(239,68,68,0.5)';this.style.color='var(--accent-red)'" onmouseout="this.style.borderColor='var(--glass-border)';this.style.color='var(--text-secondary)'" onclick="Horas.deleteTicket('${tEsc}')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </div>
+            <div style="padding:0 0 0.6rem 24px;">
+              <div class="task-bar-wrap m-0" style="height:5px;">
+                <div style="width:${w}%; height:100%; background:${color}; border-radius:3px; transition:width 0.4s ease;"></div>
+              </div>
+            </div>
+          </div>`;
       });
-      html += `</ul>`;
     } else {
-      html += `<div class="empty-state w-100" style="border: none;">No hay tickets dados de alta.</div>`;
+      html += `<div class="empty-state w-100" style="border:none; margin-top:1rem;">No hay tickets dados de alta.</div>`;
     }
 
-    html += `</div></div>`;
+    html += `</div>`;
     p.innerHTML = html;
   }
 
+  function openCreateModal() {
+    const modal = document.getElementById("create-ticket-modal");
+    if (!modal) return;
+    const nameEl = document.getElementById("new-ticket-name");
+    const estEl = document.getElementById("new-ticket-estimadas");
+    if (nameEl) nameEl.value = "";
+    if (estEl) estEl.value = "";
+    modal.classList.add("active");
+    setTimeout(() => { if (nameEl) nameEl.focus(); }, 80);
+  }
+
+  function closeCreateModal() {
+    const modal = document.getElementById("create-ticket-modal");
+    if (modal) modal.classList.remove("active");
+  }
+
   function addTicket() {
-    const val = document.getElementById("new-ticket-name").value.trim();
-    if (val) {
-      if (!_custom.months[_month]) _custom.months[_month] = { tickets: [] };
-      if (!_custom.months[_month].tickets) _custom.months[_month].tickets = [];
-      if (!_custom.months[_month].tickets.includes(val)) {
-        _custom.months[_month].tickets.push(val);
-        _saveLocal();
-        _pushSync();
-        _render();
-      }
+    const nameEl = document.getElementById("new-ticket-name");
+    const estEl = document.getElementById("new-ticket-estimadas");
+    const val = nameEl ? nameEl.value.trim() : "";
+    const estVal = estEl ? estEl.value.trim() : "";
+    if (!val) return;
+
+    if (!_custom.months[_month]) _custom.months[_month] = { tickets: [] };
+    if (!_custom.months[_month].tickets) _custom.months[_month].tickets = [];
+    if (!_custom.months[_month].ticketEstimadas) _custom.months[_month].ticketEstimadas = {};
+    if (!_custom.months[_month].tickets.includes(val)) {
+      _custom.months[_month].tickets.push(val);
     }
+    if (estVal !== "" && !isNaN(parseFloat(estVal))) {
+      _custom.months[_month].ticketEstimadas[val] = parseFloat(estVal);
+    }
+
+    closeCreateModal();
+    _saveLocal();
+    _pushSync();
+    _render();
+  }
+
+  // (duplicate addTicket removed — see definition above)
+
+  async function updateTicketEstimadas(tName) {
+    const current = (_custom.months[_month] && _custom.months[_month].ticketEstimadas && _custom.months[_month].ticketEstimadas[tName] != null)
+      ? String(_custom.months[_month].ticketEstimadas[tName])
+      : "";
+    const res = await customPrompt("Horas estimadas para \"" + tName + "\" (deja vacío para quitar):", current);
+    if (res === null) return; // cancelado
+    if (!_custom.months[_month]) _custom.months[_month] = { tickets: [] };
+    if (!_custom.months[_month].ticketEstimadas) _custom.months[_month].ticketEstimadas = {};
+    const trimmed = res.trim();
+    if (trimmed === "" || isNaN(parseFloat(trimmed))) {
+      delete _custom.months[_month].ticketEstimadas[tName];
+    } else {
+      _custom.months[_month].ticketEstimadas[tName] = parseFloat(trimmed);
+    }
+    _saveLocal();
+    _pushSync();
+    _render();
   }
 
   function customPrompt(message, defaultValue = "") {
@@ -514,35 +581,74 @@ const Horas = (function () {
     });
   }
 
-  async function editTicket(oldName) {
-    const newName = await customPrompt("Nuevo nombre para el ticket:", oldName);
-    if (!newName || newName.trim() === "" || newName === oldName) return;
-    const t = newName.trim();
+  function editTicket(oldName) {
+    // Open the edit modal pre-filled with current values
+    const modal = document.getElementById("edit-ticket-modal");
+    if (!modal) return;
+    const nameEl = document.getElementById("edit-ticket-name");
+    const estEl = document.getElementById("edit-ticket-estimadas");
+    if (nameEl) nameEl.value = oldName;
+    const curEst = (_custom.months[_month] && _custom.months[_month].ticketEstimadas && _custom.months[_month].ticketEstimadas[oldName] != null)
+      ? _custom.months[_month].ticketEstimadas[oldName]
+      : "";
+    if (estEl) estEl.value = curEst;
+    modal.dataset.oldName = oldName;
+    modal.classList.add("active");
+    setTimeout(() => { if (nameEl) nameEl.focus(); }, 80);
+  }
 
-    // Update in tickets list
+  function closeEditModal() {
+    const modal = document.getElementById("edit-ticket-modal");
+    if (modal) modal.classList.remove("active");
+  }
+
+  function saveEditTicket() {
+    const modal = document.getElementById("edit-ticket-modal");
+    if (!modal) return;
+    const oldName = modal.dataset.oldName || "";
+    const nameEl = document.getElementById("edit-ticket-name");
+    const estEl = document.getElementById("edit-ticket-estimadas");
+    const newName = nameEl ? nameEl.value.trim() : "";
+    const estVal = estEl ? estEl.value.trim() : "";
+
+    if (!newName) return;
+
+    const t = newName;
+
+    // Update name in tickets list
     if (_custom.months[_month] && _custom.months[_month].tickets) {
       const idx = _custom.months[_month].tickets.indexOf(oldName);
-      if (idx !== -1) {
-        _custom.months[_month].tickets[idx] = t;
-      }
+      if (idx !== -1) _custom.months[_month].tickets[idx] = t;
     }
 
     // Update all entries using this ticket in the current month
     if (_custom.months[_month]) {
       Object.keys(_custom.months[_month]).forEach((k) => {
-        if (k === "tickets") return;
+        if (k === "tickets" || k === "ticketEstimadas") return;
         const dayObj = _custom.months[_month][k];
         if (Array.isArray(dayObj)) {
-          dayObj.forEach((e) => {
-            if (e.task === oldName) e.task = t;
-          });
+          dayObj.forEach((e) => { if (e.task === oldName) e.task = t; });
         }
       });
     }
 
+    // Update / remove estimated hours
+    if (!_custom.months[_month].ticketEstimadas) _custom.months[_month].ticketEstimadas = {};
+    // Remove old key if name changed
+    if (oldName !== t && _custom.months[_month].ticketEstimadas[oldName] != null) {
+      _custom.months[_month].ticketEstimadas[t] = _custom.months[_month].ticketEstimadas[oldName];
+      delete _custom.months[_month].ticketEstimadas[oldName];
+    }
+    if (estVal !== "" && !isNaN(parseFloat(estVal))) {
+      _custom.months[_month].ticketEstimadas[t] = parseFloat(estVal);
+    } else {
+      delete _custom.months[_month].ticketEstimadas[t];
+    }
+
+    closeEditModal();
     _saveLocal();
     _pushSync();
-    _onDataLoaded(); // full re-render to compute totals correctly
+    _onDataLoaded();
   }
 
   async function deleteTicket(tName) {
@@ -1057,113 +1163,113 @@ const Horas = (function () {
     const res = document.getElementById("add-result");
     if (!res) return;
     try {
-    const dateVal = document.getElementById("add-day-date").value;
+      const dateVal = document.getElementById("add-day-date").value;
 
-    if (!dateVal) {
-      res.innerHTML = `<div class="modal-field-error">Falta seleccionar la fecha</div>`;
-      return;
-    }
-
-    // Parse as local date to avoid UTC offset shifting the day (e.g. UTC+2)
-    const [dYear, dMon, dDay] = dateVal.split("-").map(Number);
-    const dObj = new Date(dYear, dMon - 1, dDay);
-    const dayNames = [
-      "Domingo",
-      "Lunes",
-      "Martes",
-      "Miércoles",
-      "Jueves",
-      "Viernes",
-      "Sábado",
-    ];
-    const day = `${dayNames[dObj.getDay()]} ${dObj.getDate()}`;
-
-    let task = document.getElementById("add-task").value.trim();
-    let horario = document.getElementById("add-horario").value.trim();
-    const nota = document.getElementById("add-nota").value.trim();
-    const estado = document.getElementById("add-estado").value;
-    const idToEdit = document.getElementById("add-edit-id").value;
-
-    if (!day) {
-      res.innerHTML = `<div class="modal-field-error">Falta el día</div>`;
-      return;
-    }
-
-    let horas = 0;
-    if (estado !== "normal" || horario === "Jornada completa") {
-      if (estado !== "normal") {
-        task = "Ausencia / Festivo";
-        horario = "-";
-      }
-      const [mmStr] = _month.split("-");
-      const mm = parseInt(mmStr, 10);
-      const isIntensiva = mm === 7 || mm === 8;
-      if (isIntensiva) {
-        horas = 7;
-        if (estado === "normal" && horario === "Jornada completa") {
-          horario = "08:00 - 15:00";
-        }
-      } else {
-        const isFriday = dObj.getDay() === 5;
-        horas = isFriday ? 7 : 9;
-        if (estado === "normal" && horario === "Jornada completa") {
-          horario = isFriday ? "07:00 - 14:00" : "08:00 - 15:00, 16:00 - 18:00";
-        }
-      }
-    } else {
-      horas = parseHoras(horario);
-
-      // Descuento parón 14:00-15:00: L-J, sept-jun, horario manual normal
-      const paronMm = parseInt(_month.split("-")[0], 10);
-      const paronIsIntensiva = paronMm === 7 || paronMm === 8;
-      const paronDow = dObj.getDay(); // 0=Dom,1=Lun..4=Jue,5=Vie
-      if (!paronIsIntensiva && paronDow >= 1 && paronDow <= 4) {
-        const paronRanges = horario.split(/[,;]|\s+[y&]\s+/);
-        let paronDeduccion = 0;
-        paronRanges.forEach((r) => {
-          r = r.trim();
-          const pm = r.match(
-            /(\d{1,2})[:\.]?(\d{2})?\s*[-a]\s*(\d{1,2})[:\.]?(\d{2})?/,
-          );
-          if (pm) {
-            const ph1 = parseInt(pm[1] || 0) + parseInt(pm[2] || 0) / 60;
-            const ph2 = parseInt(pm[3] || 0) + parseInt(pm[4] || 0) / 60;
-            // El rango cruza completamente el parón (empieza antes de las 14 y acaba después de las 15)
-            if (ph1 < 14 && ph2 > 15) {
-              paronDeduccion += 1;
-            }
-          }
-        });
-        if (paronDeduccion > 0) {
-          horas = Math.round((horas - paronDeduccion) * 10) / 10;
-        }
-      }
-
-      if (horas <= 0) {
-        if (!horario) {
-          res.innerHTML = `<div class="modal-field-error">El horario es obligatorio para calcular las horas.</div>`;
-        } else {
-          res.innerHTML = `<div class="modal-field-error">No se pudieron calcular las horas. Revisa el formato del horario (ej: 08:00 - 17:00).</div>`;
-        }
+      if (!dateVal) {
+        res.innerHTML = `<div class="modal-field-error">Falta seleccionar la fecha</div>`;
         return;
       }
-    }
 
-    if (!_custom.months) _custom.months = {};
-    if (!_custom.months[_month]) _custom.months[_month] = {};
+      // Parse as local date to avoid UTC offset shifting the day (e.g. UTC+2)
+      const [dYear, dMon, dDay] = dateVal.split("-").map(Number);
+      const dObj = new Date(dYear, dMon - 1, dDay);
+      const dayNames = [
+        "Domingo",
+        "Lunes",
+        "Martes",
+        "Miércoles",
+        "Jueves",
+        "Viernes",
+        "Sábado",
+      ];
+      const day = `${dayNames[dObj.getDay()]} ${dObj.getDate()}`;
 
-    const data = { day, task, horas, horario, nota, estado };
-    const id = idToEdit || `cust_${Date.now()}`;
-    _custom.months[_month][id] = data;
+      let task = document.getElementById("add-task").value.trim();
+      let horario = document.getElementById("add-horario").value.trim();
+      const nota = document.getElementById("add-nota").value.trim();
+      const estado = document.getElementById("add-estado").value;
+      const idToEdit = document.getElementById("add-edit-id").value;
 
-    res.innerHTML = `<div class="modal-field-ok">${idToEdit ? "Modificado" : "Añadido"} correctamente (+${horas}h)</div>`;
-    _saveLocal();
-    _pushSync();
-    setTimeout(() => {
-      res.innerHTML = "";
-      cancelEdit();
-      switchTab("mensual");
-    }, 1000);
+      if (!day) {
+        res.innerHTML = `<div class="modal-field-error">Falta el día</div>`;
+        return;
+      }
+
+      let horas = 0;
+      if (estado !== "normal" || horario === "Jornada completa") {
+        if (estado !== "normal") {
+          task = "Ausencia / Festivo";
+          horario = "-";
+        }
+        const [mmStr] = _month.split("-");
+        const mm = parseInt(mmStr, 10);
+        const isIntensiva = mm === 7 || mm === 8;
+        if (isIntensiva) {
+          horas = 7;
+          if (estado === "normal" && horario === "Jornada completa") {
+            horario = "08:00 - 15:00";
+          }
+        } else {
+          const isFriday = dObj.getDay() === 5;
+          horas = isFriday ? 7 : 9;
+          if (estado === "normal" && horario === "Jornada completa") {
+            horario = isFriday ? "07:00 - 14:00" : "08:00 - 15:00, 16:00 - 18:00";
+          }
+        }
+      } else {
+        horas = parseHoras(horario);
+
+        // Descuento parón 14:00-15:00: L-J, sept-jun, horario manual normal
+        const paronMm = parseInt(_month.split("-")[0], 10);
+        const paronIsIntensiva = paronMm === 7 || paronMm === 8;
+        const paronDow = dObj.getDay(); // 0=Dom,1=Lun..4=Jue,5=Vie
+        if (!paronIsIntensiva && paronDow >= 1 && paronDow <= 4) {
+          const paronRanges = horario.split(/[,;]|\s+[y&]\s+/);
+          let paronDeduccion = 0;
+          paronRanges.forEach((r) => {
+            r = r.trim();
+            const pm = r.match(
+              /(\d{1,2})[:\.]?(\d{2})?\s*[-a]\s*(\d{1,2})[:\.]?(\d{2})?/,
+            );
+            if (pm) {
+              const ph1 = parseInt(pm[1] || 0) + parseInt(pm[2] || 0) / 60;
+              const ph2 = parseInt(pm[3] || 0) + parseInt(pm[4] || 0) / 60;
+              // El rango cruza completamente el parón (empieza antes de las 14 y acaba después de las 15)
+              if (ph1 < 14 && ph2 > 15) {
+                paronDeduccion += 1;
+              }
+            }
+          });
+          if (paronDeduccion > 0) {
+            horas = Math.round((horas - paronDeduccion) * 10) / 10;
+          }
+        }
+
+        if (horas <= 0) {
+          if (!horario) {
+            res.innerHTML = `<div class="modal-field-error">El horario es obligatorio para calcular las horas.</div>`;
+          } else {
+            res.innerHTML = `<div class="modal-field-error">No se pudieron calcular las horas. Revisa el formato del horario (ej: 08:00 - 17:00).</div>`;
+          }
+          return;
+        }
+      }
+
+      if (!_custom.months) _custom.months = {};
+      if (!_custom.months[_month]) _custom.months[_month] = {};
+
+      const data = { day, task, horas, horario, nota, estado };
+      const id = idToEdit || `cust_${Date.now()}`;
+      _custom.months[_month][id] = data;
+
+      res.innerHTML = `<div class="modal-field-ok">${idToEdit ? "Modificado" : "Añadido"} correctamente (+${horas}h)</div>`;
+      _saveLocal();
+      _pushSync();
+      setTimeout(() => {
+        res.innerHTML = "";
+        cancelEdit();
+        switchTab("mensual");
+      }, 1000);
     } catch (err) {
       console.error("[submitTask] Error inesperado:", err);
       if (res) res.innerHTML = `<div class="modal-field-error">Error inesperado: ${err.message}</div>`;
@@ -1361,7 +1467,12 @@ const Horas = (function () {
     deleteEntry,
     cancelEdit,
     addTicket,
+    openCreateModal,
+    closeCreateModal,
+    updateTicketEstimadas,
     editTicket,
+    closeEditModal,
+    saveEditTicket,
     deleteTicket,
     openGistModal,
     closeGistModal,

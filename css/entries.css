@@ -203,3 +203,16 @@
   color: var(--accent-blue-light);
   font-weight: 500;
 }
+
+/* ── Ticket estimated hours cell ── */
+.ticket-est-cell {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1px 4px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.ticket-est-cell:hover {
+  background: rgba(255, 255, 255, 0.07);
+  opacity: 1 !important;
+}
